@@ -1,0 +1,705 @@
+---
+title: 'Cardiovascular Disease: An empirical and predictive approach.'
+author: "Diego Alzate, Jossie Molina Perdomo, Diego Ruiz Saldoval"
+date: "20/5/2022"
+output:
+  html_document: default
+  pdf_document: default
+---
+<div style="text-align: justify">
+
+## Abstract ##
+In the following work, we wanted to find which predictors were most relevant for detecting the risk of infarction in 10 years. We had a base of 4500 observations and 16 variables in which the presence of diabetes, history of heart disease, and age were the most relevant predictors. This was achieved through the use of generalized linear binary response models with logit link. On the other hand, it was determined that the level of total cholesterol is not a statistically significant predictor, and that the hormonal protection factor associated with gender explains the difference in risk between men and women, unless there are other additional risk factors such as tobacco use. The use of regularization models allows the construction of a classifier to determine the risk of heart attack in 10 years, where through the use of the Elastic Net model an accuracy of 65.07% was obtained and an efficiency of 81.69% for detecting people who are not at risk. 
+
+ 
+
+## Introduction ##
+
+Non-communicable diseases comprising cardiovascular diseases, cancer and diabetes are the leading causes of death globally and are also rapidly increasing.
+According to the National Health Observatory (2013) non-communicable diseases caused approximately 63% of deaths and it is expected that given their level of growth they could reach 73% mortality in Colombia. Within these non-communicable diseases, cardiovascular diseases are the main cause of death, in that order of ideas at a global level 42% of deaths from cardiovascular diseases were due to ischemic heart disease, 34% of deaths were due to cerebrovascular disease, 7% due to arterial hypertension and 2% due to rheumatic heart disease.
+
+Mortality rates for cardiovascular diseases in 1998 to 2011 in Colombia have represented according to the National Health Observatory (2013) 12,475,251 potential years of life lost which implies a rate of 22.5 potential years of life lost per 1000 inhabitants. Based on this scenario, the present work refers to the study of deaths associated with cardiac arrest. For the analysis of this problem we have a database with 4500 observations.
+The items included in the database are demographic variables, consumption habits and information on the health of individuals, including sex, age, education, smoking or non-smoking status, number of cigarettes consumed, blood pressure level, number of previous cardiac arrests, whether or not one suffers from arterial hypertension, presence or absence of diabetes, cholesterol level, systolic blood pressure, diastolic blood pressure, body mass index, heart rate and glucose level, among others.
+
+
+To address this problem, it was decided to use a binary response regression method for the classification and prediction of this disease.
+<div/>
+
+<div style="text-align: justify">
+## Objectives ##
+
+### General Objective ###
+
+To determine the risk factors with the highest incidence of heart disease and, based on this, to predict for new samples whether or not an individual will suffer an acute myocardial attack.
+
+### Specific Objectives ###
+
+- Characterize the variables involved in the classification of individuals.
+
+- To formulate a classification model to determine whether or not an individual will suffer a cardiac arrest given his or her health characteristics and habits as defined in the predictor variables.
+
+- Determine the most significant risk factors as predictors of cardiac arrest. 
+<div/>
+
+
+### Activity Schedule ###
+
+<img src="C:/Users/Diego A/Downloads/cronograma_actividades.png" style="height: 453px; width:737px;"/>
+
+
+<div style="text-align: justify">
+### Problem Context ###
+
+Given the panorama of coronary artery disease, cancer, which is the second leading cause of death in the United States, occupies a little more than half of the deaths caused by cardiovascular diseases, making these, especially the most common form of cardiovascular disease, coronary artery disease, the leading cause of death in the United States.
+
+According to the Texas Heart Institute, variables have been defined or identified that have the highest probability of a person suffering from cardiovascular disease, these are called risk factors, in that order of ideas these can be divided into primary and secondary. The main risk factors are those for which there is medical evidence that their existence and prevalence generate cardiovascular disease, while the secondary risk factors are those that can increase the probability of contracting this group of diseases.
+
+Given the definition of risk factors, some of these can be controlled while others can be defined as environmental or uncontrollable. The fewer the number of cardiovascular risk factors a person has, the less likely he or she is to suffer from this disease at some point in his or her life.
+According to the Texas Heart Institute, among the main risk factors, that is, those that are known with certainty to generate this type of disease are:
+
+**High Cholesterol:** Cholesterol is a substance generated by the liver and transported in the blood, it is present in all cells and its function is the formation of cell membranes and some types of hormones in the organism. Cholesterol is also obtained through the consumption of foods of animal origin, i.e. eggs, meat, fish or dairy products.
+
+When there are low density lipoproteins (LDL) in excess, as they circulate through the body by the blood flow they begin to accumulate on the arterial walls, this accumulated plaque hardens and narrows the arteries preventing the flow of oxygen-rich blood, when the coronary arteries suffer this plaque formation there is a greater risk of cardiac arrest.
+
+**Diabetes:** The presence of diabetes can damage the blood vessels and nerves that control the heart generating irregular functioning or total loss of heart function, according to the American Heart Foundation 65% of diabetic patients die from some cardiovascular disease. 
+On the other hand, patients with type II diabetes have a higher cardiovascular risk than patients with type I diabetes.
+
+It has been defined that certain groups of races and/or ethnicities have a higher risk of suffering from diabetes, such as blacks, Hispanics, Polynesians, Asians, Micronesians and Amerindians, so race can become a risk factor for cardiovascular disease.
+
+**Overweight and Obesity:** Overweight and obesity can generate consequences such as increased blood pressure, the presence of diabetes or high blood cholesterol values, therefore these are risk factors for cardiovascular disease. 
+
+Obesity is measured from the Body Mass Index (BMI) which implies a ratio between weight and the square of height. This measure correlates moderately with direct measures of body fat. In the case of adults, according to the Center for Disease Control and Prevention, an adult person with a BMI greater than or equal to 30 kg/m2 would be obese and with a BMI of 25 to 29.9 kg/m2 would be overweight.
+
+In that order of ideas this index is not robust for people who are high performance athletes who may have large amounts of muscle mass.
+
+**Smoking: ** This habit falls within the controllable risk factors, however, given its capacity to generate addiction associated with the presence of nicotine, it is a challenge to stop its consumption. Cardiovascular health effects include increased heart rate, hardening of the arteries and may cause irregularities in heart rhythm.
+
+**Physical Activity:** Low physical activity increases the risk of cardiovascular disease, since consistent physical activity by itself helps to regulate blood pressure, maintain a healthy weight by burning calories, control the level of cholesterol (LDL) in the blood and diabetes. Moreover, regular physical activity increases the strength of the heart muscle.
+
+**Hereditary conditions:** Heart diseases have the capacity of generational transmission, so if any of the first degree relatives suffered a cardiovascular disease before 55 years of age, there is a higher risk.
+
+Also other major risk factors have intergenerational transmission effects such as arterial hypertension, diabetes and obesity.
+
+**Age:** As age increases, the activity of the heart tends to worsen or deteriorate, the arteries may lose flexibility and gain hardness so that the heart will not be able to pump blood efficiently as it did at younger ages to the muscles of the body; 80% of people who died of a heart attack were older than 65 years of age.
+
+Other major risks for cardiovascular disease are also considered to be chronically or persistently high levels of stress, which is believed to increase heart rate, blood pressure (which can damage the walls of the arteries, so that as they regenerate they can scar, thicken or harden) and the need for oxygen pumped by the heart. On the other hand, alcohol abuse can lead to high blood pressure, irregular heart rhythm and heart muscle disease.
+
+The levels of sex hormones, for example, in the case of women, when they reach menopause, their chances of heart attacks increase considerably. 
+
+Once the main risk factors for cardiovascular disease have been defined, there are demographic variables other than age, gender and race that can be predictors of heart attack, thus according to Reiner et al (2011) there is a higher incidence of Sudden Cardiovascular Death in areas that had a low socioeconomic level. Where it was concluded that individuals with lower socioeconomic status possessed a higher burden or amount of cardiovascular disease risk factors associated with lifestyle habits as individual risk factors, poor control on these risk factors and long waits or delays in medical help for acute myocardial infarction. On the other hand, the existence of disparity in hospital variables, mainly the existence of medical equipment and trained personnel, is associated with socioeconomic level and therefore with the survival outcome of individuals who suffer acute myocardial infarction, which implies that economic conditions that are shared in "neighborhoods" or geographic zones have an impact on mortality from acute myocardial infarction.
+
+Given the context of the problem, it would be interesting to address the following hypotheses and answer them based on the methodology of the project:
+
+- The level of high cholesterol has a greater impact than the presence of diabetes on cardiovascular disease associated with acute myocardial infarction.
+
+- The presence of a history of cardiovascular disease is the most significant predictor of 10-year risk of myocardial infarction compared to the other risk factors.
+
+- Daily smoking has less influence than the presence of hypertension on the risk of acute myocardial infarction.
+
+- Female smokers have a lower risk of acute myocardial infarction than male smokers because of the protection against cardiovascular risk provided by estrogen production.
+
+- Elevated heart rate (tachycardia) has a greater effect on the risk of acute myocardial infarction than low heart rate (bradycardia).
+<div/>
+
+### Exploratory Analysis ###
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE, results=FALSE}
+library(mice)
+library(esquisse)
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+library(hrbrthemes)
+library(viridis)
+library(psych)
+library(knitr)
+
+#
+df <- read.csv("framingham.csv", sep = ";")
+
+#Inputación de datos por Random Forest
+imput<-mice(df[,1:16], method = ("rf"))
+datos=complete(imput)
+
+datos_cuanti<-dplyr::select(datos, "age","cigsPerDay","totChol",
+                            "sysBP","diaBP","BMI","heartRate",
+                            "glucose")
+```
+
+### Figure 1: Distribution and correlation of quantitative risk variables for acute myocardial infarction ###
+```{r,echo=FALSE, warning=FALSE, results=FALSE}
+pairs.panels(datos_cuanti,
+             smooth = TRUE,      # Si TRUE, dibuja ajuste suavizados de tipo loess
+             scale = FALSE,      # Si TRUE, escala la fuente al grado de correlación
+             density = TRUE,     # Si TRUE, añade histogramas y curvas de densidad
+             ellipses = TRUE,    # Si TRUE, dibuja elipses
+             method = "pearson", # Método de correlación (también "spearman" o "kendall")
+             pch = 21,           # Símbolo pch
+             lm = FALSE,         # Si TRUE, dibuja un ajuste lineal en lugar de un ajuste LOESS
+             cor = TRUE,         # Si TRUE, agrega correlaciones
+             jiggle = FALSE,     # Si TRUE, se añade ruido a los datos
+             factor = 2,         # Nivel de ruido añadido a los datos
+             hist.col = 4,       # Color de los histogramas
+             stars = TRUE,       # Si TRUE, agrega el nivel de significación con estrellas
+             ci = TRUE)
+
+```
+
+At the global level none of the quantitative variables correlates with each other, with the exception of systolic and diastolic blood pressure as we can see in **Figure 1**. 
+
+However, it was expected that variables such as Body Mass Index and heart rate among others would correlate, given that a level of overweight or obesity would represent a greater functional burden on the heart.
+
+On the other hand, the highest proportion of people are 49 years old, where 25% of the youngest people are 42 years old or younger, and the youngest person is 32 years old; however, 25% of the oldest people are 56 years old or older.
+
+For the variable of number of cigarettes consumed per day, the highest proportion of individuals are heavy tobacco users, given a skewness coefficient of 1.23.
+
+The cholesterol level within the study group averaged 234 ml/dL, implying that the average person has higher than normal cholesterol levels; people with the highest 25% of cholesterol in the sample have high cholesterol levels, implying the presence of risk factors for cardiovascular health. In terms of Body Mass Index distribution, we have that 50% of the people in the sample are overweight and less than 25% of the individuals suffer from obesity, heart rate which is another relevant factor as a health metric we have that 50% of the individuals have a heart rate between 60 and 100 beats per minute which is a normal range, where the average heart rate is 75. 88 beats per minute and a small percentage that make up the extremes of the distribution present bradycardia or tachycardia, which may be an indicator of heart disease, given that it is possible to use medication to decrease the heart rate; however, it is not possible to state this with certainty when considering that people who perform high and regular levels of physical activity may have heart rate levels lower than 60, now for the case of the right end of the distribution, cardiac arrhythmia is a symptom of possible cardiovascular disease.
+
+### Table 1 and Figure 2: Descriptive Statistics
+
+```{r, echo=FALSE}
+box_a <- data.frame(Variable = c("Age","Number of Cigarettes per Day",
+                        "Diastolic Blood Pressure",
+                        "Body Mass Index"),
+                        Min = c(32,0,48,15.54),
+                        Q1 = c(42,0,75,23.07),
+                        Median = c(49,0,82,25.38),
+                        Q3 = c(56,20,89.88,28.04),
+                        Max = c(70,70,142.50,56.80))
+#
+kable(box_a)
+```
+
+
+```{r, echo=FALSE}
+A <- dplyr::select(datos_cuanti,"age", "cigsPerDay", "diaBP","BMI")
+B <- dplyr::select(datos_cuanti, "totChol","sysBP","heartRate","glucose")
+boxplot(A, col = rainbow(n = 4))
+```
+
+In **Figure 2** we can see that there are individuals where 50% of the people do not use tobacco while 25% of the people who consume this substance smoke 20 cigarettes or more per day, reaching a maximum consumption of 70 cigarettes per day, in that order of ideas 25% of the sample would represent high risk factors in their cardiovascular health. 
+
+For diastolic blood pressure, this means the blood pressure measured at the moment when the heart relaxes. We have that according to **Table 1** that 50% of the individuals have a diastolic pressure of 82 millimeters of mercury, which implies that 50% of the people who have higher diastolic pressure may suffer hypertension, however this in case that diastolic pressure is persistent over time and not acute or sporadic at the time of measurement. We can also observe in this measurement that there are several atypical individuals with a diastolic pressure above 115 milliliters of mercury approximately.
+
+
+### Table 2 and Figure 3: Descriptive Statistics
+```{r, echo=FALSE}
+box_b <- data.frame(Variable = c("Total Cholesterol","Systolic Blood Pressure","Heart Rate","Glucose Level"),
+                    Min = c(107,83.5,44,40),
+                    Q1 = c(206,117,68,71),
+                    Median = c(234,128,75,78),
+                    Q3 = c(263,144,83,86),
+                    Max = c(696,295,143,394))
+#
+kable(box_b)
+boxplot(B, col = rainbow(n = 4))
+```
+
+In **Figure 3** we can see that for systolic blood pressure, that is when the heart contracts to send blood to the body, 25% of people have less than 117 millimeters of mercury of systolic pressure, this may imply the presence of low blood pressure either as a pathological consequence or as an effect of some medication they are taking, on the other hand 25% of people with higher systolic blood pressure have levels greater than or equal to 144 millimeters of mercury reaching up to 295 millimeters of mercury. These levels are abnormal and may imply the presence of high blood pressure or hypertension.
+
+In the case of glucose where the blood glucose level is measured at any time, i.e. without any preparation, we can see that in **Figure 3** less than 25% of the people with the highest blood glucose levels have levels greater than 200 mg/dl, which implies the presence of diabetes.
+of the people with the highest blood glucose levels have levels higher than 200 mg/dl, which implies the presence of diabetes. 
+
+```{r, echo=FALSE}
+#Variables cualitativas
+datos$male <- factor(datos$male, levels = c(0,1),
+                     labels = c("Women","Men"))
+datos$currentSmoker <- factor(datos$currentSmoker,
+                       levels = c(0,1),
+                       labels = c("Does not smoke","Smoke"))
+datos$BPMeds <- factor(datos$BPMeds, levels = c(0,1),
+                       labels = c("No","Yes"))
+datos$prevalentStroke <- factor(datos$prevalentStroke, 
+                                levels = c(0,1), 
+                                labels =c("No","Yes"))
+datos$prevalentHyp <- factor(datos$prevalentHyp, levels = c(0,1),
+                             labels = c("No","Yes"))
+datos$diabetes <- factor(datos$diabetes, levels = c(0,1),
+                         labels = c("No","Yes"))
+datos$TenYearCHD <- factor(datos$TenYearCHD, levels = c(0,1),
+                           labels = c("No","Yes"))
+
+```
+
+```{r, echo=FALSE}
+tabla_1 <- as.data.frame(prop.table(table(datos$male))*100)
+colnames(tabla_1) <- c("Gender","Frequency")
+tabla_1$Frequency <- round(tabla_1$Frequency,2)
+```
+
+### Figure 4: Gender Distribution
+
+```{r, echo=FALSE}
+g1 <- ggplot(data = tabla_1, aes(x = Gender, y = Frequency, fill = Gender))
+g1 <- g1 + geom_bar(stat = "identity")
+g1 <- g1 + xlab("Gender")
+g1 <- g1 + ylab("Frequency (%)")
+g1 <- g1 + theme_classic()
+g1 <- g1 + geom_text(aes(label=paste(Frequency,"%")), vjust = 1.6,
+                     color = "black")
+g1 <- g1 + scale_fill_brewer(palette = "Spectral")
+g1
+```
+
+We can observe in **Figure 4** that there is a slight predominance of women over men, where the level of women is 7.16% higher than men. 
+
+This in terms of analysis of heart disease would tell us that the higher proportion of individuals would have lower risk of heart disease, so according to the Mexican Heart Foundation estrogen which is the female hormone acts as a protective factor against cardiovascular disease, only after menopause in women, their risk of contracting this disease increases considerably.
+
+However, it is important to understand that estrogen generated naturally acts as a protective factor, but the artificial use of estrogen as a treatment in women increases the risk of thrombosis and/or the formation of clots in the arteries.
+
+```{r, echo=FALSE}
+tabla_2 <- as.data.frame(prop.table(table(datos$currentSmoker,
+                                          datos$male), margin = 1)*100)
+tabla_2$Freq <- round(tabla_2$Freq,2)
+colnames(tabla_2) <- c("Smoker_not_smoker", "gender", "frequency")
+```
+
+### Figure 5: Distribution of Smokers by Gender ###
+```{r, echo=FALSE}
+g2 <- ggplot(data = tabla_2, aes(x = Smoker_not_smoker, 
+                                 y = frequency, fill= gender))
+g2 <- g2 + geom_bar(stat = "identity", position = position_dodge())
+g2 <- g2 + xlab("Smoker / Not Smoker")
+g2 <- g2 + ylab("Frequency %")
+g2 <- g2 + theme_classic()
+g2 <- g2 + geom_text(aes(label = paste(frequency,"%")), 
+                     vjust = 1.6, color = "black",
+                     position = position_dodge(0.9))
+g2 <- g2 + scale_fill_brewer(palette = "Spectral")
+g2
+```
+
+In **Figure 5** we can see that the demographic distribution of smokers shows that 66.74% of non-smokers are women while 52.82% of smokers are men. This implies that people who smoke have a relatively homogeneous distribution by gender, while the majority of non-smokers are women.
+
+### Figure 6: Proportion of people at risk of a heart attack in 10 years given a history of heart disease ###
+
+```{r, echo=FALSE}
+#Riesgo de enfermedad coronaria dado si se ha tenido o no un
+#ataque previamente
+tabla_3 <- as.data.frame(prop.table(table(datos$prevalentStroke,
+                                          datos$TenYearCHD), 
+                                          margin = 1)*100)
+
+tabla_3$Freq <- round(tabla_3$Freq,2)
+colnames(tabla_3) <- c("Past_Attack", "riesgo_at", "frequency")
+
+g3 <- ggplot(data = tabla_3, aes(x = riesgo_at, y = frequency, fill = Past_Attack)) 
+g3 <- g3 + geom_bar(stat = "identity", position = position_dodge())
+g3 <- g3 + xlab("Risk of Coronary Heart Attack in 10 years")
+g3 <- g3 + ylab("Frequency (%)")
+g3 <- g3 + theme_classic()
+g3 <- g3 + geom_text(aes(label = paste(frequency,"%")), 
+                     vjust = 1.6, color = "black",
+                     position = position_dodge(0.9))
+g3 <- g3 + scale_fill_brewer(palette = "Spectral")
+g3
+```
+
+In **Figure 6** we can see that of the people who suffered a heart attack in the past, i.e. who have a history of heart disease 56% have no risk of suffering another attack in 10 years, this may imply some issues such as for example that the history of heart disease is not as relevant a predictor as the other risk factors for acute myocardial attack, or that the previous history encourages the person to periodic risk factor control leading to a reduced risk of heart attack in the future.
+
+
+```{r, echo=FALSE}
+# Haber sufrido un ataque cardiaco dado que tenia hipertensión
+tabla_4 <- as.data.frame(prop.table(table(datos$prevalentHyp, 
+                                          datos$prevalentStroke))*100)
+
+tabla_4$Freq <- round(tabla_4$Freq,2)
+colnames(tabla_4) <- c("hypertension_history", 
+                       "heart_attack_history",
+                       "frequency")
+```
+
+### Figure 7: History of Heart Attack given a History of Arterial Hypertension ###
+
+```{r, echo=FALSE}
+# Grafica ataque al corazón dado que tenia historial de hipertensión
+g4 <- ggplot(data = tabla_4, aes(x = heart_attack_history, y = frequency, 
+                                 fill=hypertension_history))
+g4 <- g4 + geom_bar(stat = "identity",position = position_dodge())
+g4 <- g4 + xlab("Heart Attack History")
+g4 <- g4 + ylab("Frequency (%)")
+g4 <- g4 + theme_classic()
+g4 <- g4 + geom_text(aes(label = paste(frequency,"%")),
+                     vjust = -0.3, color = "black",
+                     position = position_dodge(0.9))
+g4 <- g4 + scale_fill_brewer(palette = "Spectral")
+g4
+```
+
+In **Figure 7** we can see that 68.81% of the individuals with no history of heart attack did not have hypertension either, while 30.6% did. On the other hand, less than 1% of those with a history of heart attack had a history of hypertension at the same time.
+
+```{r, echo=FALSE}
+# Riesgo de ataque al corazón en 10 años dado que tiene diabetes
+tabla_5 <- as.data.frame(prop.table(table(datos$diabetes, 
+                                          datos$TenYearCHD),
+                                          margin = 1)*100)
+tabla_5$Freq <- round(tabla_5$Freq, 2)
+colnames(tabla_5) <- c("presence_of_diabetes", "Heart_Attack_Risk",
+                       "frequency")
+```
+
+### Figure 8: Proportion of Individuals with Diabetes who are at Risk of Heart Attack ###
+
+```{r, echo=FALSE}
+g5 <- ggplot(data= tabla_5, aes(x = presence_of_diabetes, y = frequency, 
+                                  fill = Heart_Attack_Risk))
+g5 <- g5 + geom_bar(stat = "identity", position = position_dodge())
+g5 <- g5 + xlab("Presence of Diabetes")
+g5 <- g5 + ylab("Frequency (%)")
+g5 <- g5 + theme_classic()
+g5 <- g5 + geom_text(aes(label = paste(frequency,"%")),
+                     vjust = 1.6, color = "black",
+                     position = position_dodge(0.9))
+g5 <- g5 + scale_fill_brewer(palette = "Spectral")
+g5
+```
+
+**Figure 8** shows that of those who do not have diabetes, 85.37% have no risk of a heart attack in 10 years, while 63.3% of those who do have diabetes also have no risk of suffering a heart attack in the future. This leads us to think that perhaps diabetes by itself is not a strong risk factor for the prediction of acute myocardial infarction, or that on the other hand the presence of diabetes increases the medical control of other risk factors.
+
+### Figure 9: Distribution of Heart Attack Risk over 10 years ###
+
+```{r, echo=FALSE}
+tabla_6 <- as.data.frame(round(prop.table(table
+                                          (datos$TenYearCHD))*100,2))
+colnames(tabla_6) <- c("Heart_Attack_Risk","frequency")
+
+# Gráfico Riesgo de ataque cardiaco en 10 años
+g6 <- ggplot(data = tabla_6, aes(x = Heart_Attack_Risk, 
+                                 y = frequency, fill = Heart_Attack_Risk))
+g6 <- g6 + geom_bar(stat = "identity")
+g6 <- g6 + xlab("Heart Attack Risk in 10 years")
+g6 <- g6 + ylab("Frequency (%)")
+g6 <- g6 + theme_classic()
+g6 <- g6 + geom_text(aes(label=paste(frequency,"%")), vjust = 1.6, 
+                     color = "black")
+g6 <- g6 + scale_fill_brewer(palette = "Spectral")
+g6
+```
+
+**Figure 9** tells us that the largest proportion of individuals in the sample, that is 84.8% of people, are not at risk of having a heart attack. So if we choose someone at random they are probably not going to be at risk of having a heart attack in 10 years.
+
+Finally, if we want to use this variable as a response, it could be thought that there may be a class imbalance.
+
+### Methodology ###
+
+The purpose of this work is to use the theory and application of binary response regression models, in this specific case a logistic regression model with Logit link. The purpose of this model is to achieve a good prediction as to whether a person may or may not die of cardiac arrest, as well as to identify the variables that have the greatest impact on this phenomenon. The study group is a community in Framingham, Massachusetts, of at least 4000 observations and 16 variables.
+
+On the other hand, the database had missing data as can be seen in **Table 3**, for which an imputation was performed by the "Random forest" method that "consists of the combination of predictors based on decision or regression trees that are constructed from independent samples selected from the original data set." ***Busi J. et al (2018)*** Under the above methodology this method is considered robust when imputing data, both quantitative and qualitative, i.e., for this case study it is a convenient methodology.
+
+### Table 3: Percentage of Missing Values for Quantitative Variables ###
+
+```{r, echo=FALSE}
+por_NA <- data.frame(Variables = c("Age","Cigarettes per Day",
+                         "Total Cholesterol", 
+                         "Systolic Blood Pressure",
+                         "Diastolic Blood Pressure",
+                         "Body Mass Index",
+                         "Heart Rate","Glucose"),
+           Percentage_Missing_Data = c(0,0.68,1.17,0,0,
+                                          0.44,0,9.15))
+#
+kable(por_NA, col.names = c("Variables","Missing Data (%)"))
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+datos_balanceados <- read.csv("framingham_1.csv", dec = ".")
+
+#Resampling
+library(ROSE)
+set.seed(1)
+datos_balanceados <- ovun.sample(TenYearCHD ~ ., data = datos_balanceados,method = "over", N= 7188)$data
+
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+datos_balanceados$male <- factor(datos_balanceados$male, levels = c(0,1),labels = c("Women","Man"))
+datos_balanceados$education <- factor(datos_balanceados$education)
+datos_balanceados$currentSmoker <- factor(datos_balanceados$currentSmoker)
+datos_balanceados$BPMeds <- factor(datos_balanceados$BPMeds)
+datos_balanceados$prevalentStroke <- factor(datos_balanceados$prevalentStroke)
+datos_balanceados$prevalentHyp <- factor(datos_balanceados$prevalentHyp)
+datos_balanceados$diabetes <- factor(datos_balanceados$diabetes)
+datos_balanceados$TenYearCHD <- factor(datos_balanceados$TenYearCHD, levels = c(0,1),
+                                       labels = c("No","Yes"))
+datos_balanceados$totChol <- datos_balanceados$totChol - mean(datos_balanceados$totChol)
+datos_balanceados$sysBP <- datos_balanceados$sysBP-mean(datos_balanceados$sysBP) 
+```
+
+
+### Figure 10: Unbalanced Class Adjustment ###
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+tabla_balanceados <- data.frame(table(datos_balanceados$TenYearCHD))
+tabla_balanceados$Freq <- 100*tabla_balanceados$Freq/sum(tabla_balanceados$Freq)
+colnames(tabla_balanceados) <- c("Risk", "Frequency")
+
+#Gráfico comparación datos desbalanceados y balanceados
+g7 <- ggplot(data = tabla_balanceados,aes(x=Risk, y = Frequency, fill=Risk))
+g7 <- g7 + geom_bar(stat = "identity")
+g7 <- g7 + xlab("Heart Attack Risk in 10 years")
+g7 <- g7 + ylab("Frequency (%)")
+g7 <- g7 + theme_classic()
+g7 <- g7 + geom_text(aes(label=paste(Frequency,"%")), vjust = 1.6, 
+                color = "black")
+g7 <- g7 + scale_fill_brewer(palette = "Spectral")
+#
+library(gridExtra)
+grid.arrange(g6,g7)
+```
+
+As we can see in **Figure 10** initially for our response variable, which is the 10-year risk of having a heart attack. In our original sample of approximately 4500 observations, we had that 84.8% of people had no 10-year risk of a heart attack while 15.2% did. In that vein, there may be data imbalance that would significantly affect the accuracy of our classifier to correctly detect true positives. 
+
+For this reason, we used an oversampling technique to rescale the category of yes in the heart attack risk variable by 10 years. What this does is to take a random sample with replacement and add observations until the number of observations in the "at risk" category is exactly the same as the "not at risk" category. After oversampling we have a total of 7188 observations where 50% are in the risky class and the other 50% are in the non-risky class.
+
+### Table 4: Information Value (IV) for predictor variables ###
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+datos_balanceados <- read.csv("framingham_1.csv", dec = ".")
+
+#
+set.seed(1)
+datos_balanceados <- ovun.sample(TenYearCHD ~ ., data = datos_balanceados,method = "over", N= 7188)$data
+
+#
+datos_balanceados$male <- factor(datos_balanceados$male)
+datos_balanceados$education <- factor(datos_balanceados$education)
+datos_balanceados$currentSmoker <- factor(datos_balanceados$currentSmoker)
+datos_balanceados$BPMeds <- factor(datos_balanceados$BPMeds)
+datos_balanceados$prevalentStroke <- factor(datos_balanceados$prevalentStroke)
+datos_balanceados$prevalentHyp <- factor(datos_balanceados$prevalentHyp)
+datos_balanceados$diabetes <- factor(datos_balanceados$diabetes)
+datos_balanceados$TenYearCHD <- factor(datos_balanceados$TenYearCHD)
+datos_balanceados$totChol <- datos_balanceados$totChol
+datos_balanceados$sysBP <- datos_balanceados$sysBP
+```
+
+
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+library(InformationValue)
+library(dplyr)
+
+iv_male <- round(IV(datos_balanceados$male, datos_balanceados$TenYearCHD, valueOfGood = 1)[1],3)
+#
+iv_age <- round(IV(datos_balanceados$age, datos_balanceados$TenYearCHD, valueOfGood = 1)[1],3)
+#
+iv_c_smoker <- round(IV(datos_balanceados$currentSmoker, datos_balanceados$TenYearCHD, 
+                  valueOfGood = 1)[1],3)
+#
+iv_cigs_day <- round(IV(datos_balanceados$cigsPerDay, datos_balanceados$TenYearCHD, 
+                  valueOfGood = 1)[1],3)
+#
+iv_bpmeds <- round(IV(datos_balanceados$BPMeds, datos_balanceados$TenYearCHD, 
+                valueOfGood = 1)[1],3)
+#
+iv_prev_stroke <- round(IV(datos_balanceados$prevalentStroke, datos_balanceados$TenYearCHD, 
+                     valueOfGood = 1)[1],3)
+#
+iv_prev_hyp <- round(IV(datos_balanceados$prevalentHyp, datos_balanceados$TenYearCHD, 
+                  valueOfGood = 1)[1],3)
+#
+iv_diabetes <- round(IV(datos_balanceados$diabetes, datos_balanceados$TenYearCHD, 
+                  valueOfGood = 1)[1],3)
+#
+iv_totchol <- round(IV(datos_balanceados$totChol, datos_balanceados$TenYearCHD, 
+                 valueOfGood = 1)[1],3)
+#
+iv_sysbp <- round(IV(datos_balanceados$sysBP, datos_balanceados$TenYearCHD, 
+               valueOfGood = 1)[1],3)
+#
+iv_diabp <- round(IV(datos_balanceados$diaBP, datos_balanceados$TenYearCHD, 
+               valueOfGood = 1)[1],3)
+#
+iv_bmi <- round(IV(datos_balanceados$BMI, datos_balanceados$TenYearCHD, 
+             valueOfGood = 1)[1],3)
+#
+iv_heart_rate <- round(IV(datos_balanceados$heartRate, datos_balanceados$TenYearCHD, 
+                    valueOfGood = 1)[1],3)
+#
+iv_glucose <- round(IV(datos_balanceados$glucose, datos_balanceados$TenYearCHD, 
+                 valueOfGood = 1)[1],3)
+
+#
+iv_final <- data.frame(variable = c("male","age","currentSmoker","cigsPerDay",
+                      "BPMeds","prevalentStroke","prevalentHyp","diabetes",
+                        "totChol","sysBP","diaBP","BMI","heartRate","glucose"),
+           IV = c(iv_male,iv_age,iv_c_smoker,iv_cigs_day,iv_bpmeds,
+                   iv_prev_stroke,iv_prev_hyp,iv_diabetes,iv_totchol,
+                   iv_sysbp,iv_diabp,iv_bmi,iv_heart_rate,iv_glucose),
+           power = c("Weak","Useless","Useless","Useless","Weak",
+                     "Weak","Medium","Weak","Useless","Useless",
+                     "Useless","Useless","Useless","Useless"))
+
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+kable(iv_final, col.names = c("Variable", "IV","Predictive Power"))
+```
+
+Information Value is an exploratory analysis technique, which allows us to determine which variables in our data set have predictive power or influence on the response variable, for this reason in **Table 4** we determine the power of influence of each of our explanatory variables, where we find that gender and the presence of diabetes have low predictive power, while the presence of arterial hypertension has medium predictive power; The rest of the variables have a useless predictive power however they are not discarded in their totality for the modeling in order to avoid the loss of information and the omission of statistically significant variables. 
+
+### Results ###
+
+To respond to our main objective, two models were developed. The first is focused on the interpretation of estimators and on answering the hypotheses we posed in the context of the problem, whereas our second model is intended to serve as a classifier of the 10-year risk of heart attack. 
+
+### Table 5: Explanatory Model on Logarithmic Scale ###
+
+```{r, echo=FALSE}
+datos_balanceados$heart_cat <- NA
+datos_balanceados$heart_cat <- cut(datos_balanceados$heartRate, breaks = c(0,59,100,200),
+                         labels = c("Bradicardia","Normal","Taquicardia"))
+
+datos_balanceados$heart_cat <- relevel(datos_balanceados$heart_cat, ref = "Normal")
+
+#
+modelo1 <- glm(TenYearCHD~male+age+prevalentStroke+diabetes+totChol
+                 +cigsPerDay+prevalentHyp+sysBP+currentSmoker*male,
+               data = datos_balanceados, family= "binomial")
+summary(modelo1)
+```
+
+
+
+### Table 6: Explanatory Model in Real Scale ###
+
+```{r, echo=FALSE}
+exp(coef(modelo1))
+```
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+datos_balanceados <- read.csv("framingham_1.csv", dec = ".")
+
+#Resampling
+library(ROSE)
+set.seed(1)
+datos_balanceados <- ovun.sample(TenYearCHD ~ ., data = datos_balanceados,
+                                 method = "over", N= 7188)$data
+
+#
+datos_balanceados$male <- factor(datos_balanceados$male, levels = c(0,1),
+                       labels = c("Mujer","Hombre"))
+datos_balanceados$education <- factor(datos_balanceados$education)
+datos_balanceados$currentSmoker <- factor(datos_balanceados$currentSmoker)
+datos_balanceados$BPMeds <- factor(datos_balanceados$BPMeds)
+datos_balanceados$prevalentStroke <- factor(datos_balanceados$prevalentStroke)
+datos_balanceados$prevalentHyp <- factor(datos_balanceados$prevalentHyp)
+datos_balanceados$diabetes <- factor(datos_balanceados$diabetes)
+datos_balanceados$TenYearCHD <- factor(datos_balanceados$TenYearCHD)
+datos_balanceados$totChol <- datos_balanceados$totChol - mean(datos_balanceados$totChol)
+datos_balanceados$sysBP <- datos_balanceados$sysBP-mean(datos_balanceados$sysBP)
+datos_balanceados$age <- datos_balanceados$age - 20
+```
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(glmnet)
+x <- data.matrix(datos_balanceados[,c(1,2,5,7,8,10,11,15)])
+y <- datos_balanceados$TenYearCHD
+
+# Elección mejor lambda
+modelo_regu <- cv.glmnet(x, y, alpha = 1, family="binomial")
+
+lambda <- modelo_regu$lambda.min 
+
+# Modelo Regularización
+reg_1 <- glmnet(x, y, alpha = 1, lambda = lambda, family="binomial", standardize = TRUE)
+
+# Predicciones
+y_predicted <- predict(reg_1, s = lambda, newx = x)
+datos_balanceados <- datos_balanceados %>% 
+  mutate(respuesta=ifelse(y_predicted>0.4,1,0))
+```
+
+1. Initially we have that a 20-year-old woman with no history of heart attack, no diabetes with an average cholesterol level who is a non-smoker, has no arterial hypertension and has an average systolic blood pressure has a 0.02 times lower risk of not having heart disease in 10 years than of having it.
+
+1. A man is 1.61 times more likely to have heart disease in 10 years than a woman.
+
+1. For each additional year a person has, the risk of suffering a heart disease in 10 years increases by 1.06 with respect to a 20-year-old person.
+
+1. Holding everything constant, if a person has a history of heart attack they have a 2.32 times greater risk of having another heart attack in 10 years than someone who has no history of heart disease.
+
+1. Holding everything constant, a person who has diabetes has a 10-year risk of a heart attack 2.66 times higher than a person who does not have diabetes.
+
+1. Holding everything constant for every additional mg/dl of total cholesterol a person has above average, they have a 10-year risk of heart attack 1.001 times greater than a person with an average cholesterol level.
+
+1. Holding everything constant, for each additional cigarette smoked, a person has a 1.01 times greater risk of suffering a heart attack in 10 years.
+
+1. Holding everything constant, if a person has a prevalence of arterial hypertension, he or she has a 1.23 times greater risk of suffering a heart attack in 10 years than a person who does not suffer arterial hypertension.
+
+1. Holding everything constant, for every additional millimeter of mercury above the average systolic blood pressure, the risk of suffering a heart attack in 10 years is 1.01 times greater than  a person with average systolic blood pressure.
+
+1. Holding everything constant, if a person is a smoker he/she has a risk of suffering a heart attack in 10 years 1.12 times more than a non-smoker.
+
+1. Holding everything constant, a male smoker has a 1.02 times greater risk of suffering a heart attack in 10 years than a female smoker. This may suggest two things, that the hormonal factor (estrogen) that is protective against cardiovascular risk is efficient against cardiovascular damage from smoking for women and also there may be routine individual characteristics associated with stress that according to the Texas Institute a chronic persistence of stress allows the prolonged and consistent release of adrenaline, This can damage the inner layer of the arteries, which can become hardened or thicker as they heal, facilitating the accumulation of plaque in the arteries, and stress increases the risk of clot formation.
+
+- Thus, according to Segura R. (2016), the positive valuation that men give to work associated with the perception of it as a means of support, self-fulfillment and satisfaction can lead to overcommitment to their work performance, so that work overload forces them to remain long hours in the workplace to maintain their status and social hierarchy, so that the association of work performance associated with the realization of masculinity implies that work is a significantly greater stressor for men than for women. 
+
+-  At the same time, it is important to understand that chronic stress can lead to the formation of lifestyle habits that increase cardiovascular risk, according to the Texas Heart Institute, such as starting to smoke, smoking more than usual or eating more food than you should in order to feel calmer.
+
+### Table 7: Performance Metrics of Elastic Net Classificator ###
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(cutpointr)
+cp <- cutpointr(datos_balanceados, respuesta, TenYearCHD, 
+                method = maximize_metric, metric = sum_sens_spec)
+
+summary(cp)
+```
+
+### Figure 11: ROC curve ###
+
+```{r, echo=FALSE}
+plotROC(actuals=datos_balanceados$TenYearCHD, predictedScores=datos_balanceados$respuesta)
+```
+
+For the second model we used an approach where we found the model with the lowest akaike information criterion. We took the equation that yielded this result and used regularization methods, specifically the Elastic Net, this model takes a Ridge penalty, i.e. as the lambda value approaches 1 the lower the value of the predictors and the Lasso penalty. This is similar, however it has the effect of forcing the coefficients of the predictors to tend to zero, this allows us to reduce non-significant variables or those that do not provide additional information as well as to solve multicollinearity problems.
+
+For this case, we estimate the optimal value of the lambda regularization hyperparameter. This simply gives a weighting to the stronger penalty if the Ridge or Lasso. So ultimately with regularization we seek to reduce the variance as much as possible in exchange for gaining higher bias. 
+
+We can see in **Table 7** a precision or accuracy of 65.07%, which means that 6.5 out of 10 predictions are correct, which implies that the classifier has a precision to detect people who really have cardiovascular risk in 10 years or not regular, this can also be seen in **Figure 11** where the area under the curve (AUC) is 0.60, which means a regular result for the classifier. On the other hand, we have a sensitivity of 48.44%, which means that among the people who really have cardiac risk in 10 years, this risk is only detected in 48.44% of the cases. For specificity we have 81.69%, which means that in this proportion the people who do not have cardiovascular risk in 10 years are detected out of the total who really do not have cardiovascular risk.
+
+In this order of ideas, we have that the classifier is good at detecting true negatives, i.e. those persons who do not have cardiovascular risk within the group of those who really do not, and is relatively weak at detecting cardiovascular risk within the group who really have cardiovascular risk in 10 years. 
+
+### Conclusions ### 
+
+- Probably with the use of other classifiers such as decision trees, k nearest neighbors or support vector machines, classifiers with better performance can be obtained.
+
+- Among the explanatory variables, the predictor with the greatest influence on the 10-year risk of cardiovascular disease is the presence of diabetes, followed by the presence of a history of heart disease and then age.
+
+- Cardiovascular risk is higher for people with a history of heart disease than for people with cholesterol levels above the mean but less than 3mg/dl above the mean, higher than this cardiovascular risk is higher in people with high cholesterol.
+
+- Male smokers have a higher 10-year risk of cardiovascular disease than female smokers, which could be mainly explained by the presence of stress-generating factors in terms of quantity and prevalence, associated with work activity and the emergence of unhealthy lifestyle habits as ways of alleviating the discomfort caused by stress.
+
+- Systolic blood pressure generates a risk of cardiovascular disease in 10 years 0.01 times for each additional millimeter of mercury, this is generated when the heart contracts and pushes blood through the blood vessels and arteries of the body so that as the pressure increases there is greater risk of damaging the inner wall of the arteries, in addition to the functional load of the heart is greater.In this case we can define that systolic arterial hypertension that generates damage to the internal wall of the arteries is more risky than the presence of systolic arterial hypotension, which may be due to the use of medications or to regular intense physical activity.
+
+- The level of total cholesterol in the blood is not a statistically significant predictor of the 10-year risk of heart attack. In this order of ideas, the hypothesis posed where the cholesterol level is compared with diabetes with respect to the 10-year risk of heart attack cannot be analyzed.
+
+### Bibliography ###
+
+1. Texas Heart Institute. Cardiovascular Risk Factors. Taken from: https://www.texasheart.org/heart-health/heart-information-center/topics/factores-de-riesgo-cardiovascular/
+
+2. DrC. González R., DrC. Montes L., MSc. Tutusaus T. (2015) Sociodemographic Determinants and Sudden Cardiovascular Death. Cuban Journal of Public Health.
+
+3. Centers for Disease Control and Prevention
+ (2021). About the Body Mass Index for Adults. Taken from: https://www.cdc.gov/healthyweight/spanish/assessing/bmi/adult_bmi/index.html
+
+4. PhD Reiner K. et al (2011). Socioeconomic Status and Incidence of Sudden Cardiac Arrest. Journal of the Canadian Medical Association (15), 1705 - 1712
+
+5. Centers for Disease Control and Prevention (2018). Diabetes in Spanish. Taken from:
+[https://www.cdc.gov/diabetes/spanish/basics/getting-tested.html#:~:text=Los%20valores%20de%20az%C3%BAcar%20en,mayores%20indican%20que%20tiene%20diabetes.&text=Esta%20prueba%20mide%20sus%20niveles,un%20l%C3%ADquido%20que%20contiene%20glucosa.](https://www.cdc.gov/diabetes/spanish/basics/getting-tested.html#:~:text=Los%20valores%20de%20az%C3%BAcar%20en,mayores%20indican%20que%20tiene%20diabetes.&text=Esta%20prueba%20mide%20sus%20niveles,un%20l%C3%ADquido%20que%20contiene%20glucosa.)
+
+6. Mexican Heart Foundation . Gender. Taken from: [https://fundacionmexicanadelcorazon.org/prevencion/factores-de-riesgo/genero/#:~:text=El%20g%C3%A9nero%20se%20considera%20un,que%20el%20de%20una%20mujer](https://fundacionmexicanadelcorazon.org/prevencion/factores-de-riesgo/genero/#:~:text=El%20g%C3%A9nero%20se%20considera%20un,que%20el%20de%20una%20mujer)
+
+7. National Health Observatory (2013). Cardiovascular Disease: Leading Cause of Death in Colombia. Bulletin No. 1, december 9 of 2013
+
+8. Bussi J. et al. (2018). Visualization and Imputation Methods for Missing Data in the Household Expenditure Survey. 
+
+9. Segura R. , Perez I. (2016). Differential impact of stress between men and women: A gender approach.. FES Iztacala Institutional Gender Studies Program.
+
+10. Mayo Clinic. Healthy Lifestyle: Being fit. Taken from:
+[https://www.mayoclinic.org/es-es/healthy-lifestyle/fitness/expert-answers/heart-rate/faq-20057979](https://www.mayoclinic.org/es-es/healthy-lifestyle/fitness/expert-answers/heart-rate/faq-20057979)
+
+
+
